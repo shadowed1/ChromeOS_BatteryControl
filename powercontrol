@@ -466,7 +466,7 @@ show_help() {
     echo "sudo powercontrol monitor             # Live temperature monitoring"
     echo "sudo powercontrol startup             # Initiate powercontrol /etc/init .conf installer"
     echo "sudo powercontrol help                # Help menu"
-    echo "sudo powercontrol uninstall           # Initiate uninstaller
+    echo "sudo powercontrol uninstall           # Initiate uninstaller"
     echo ""
 }
 
