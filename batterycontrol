@@ -85,7 +85,8 @@ set_thresholds() {
 }
 
 show_help() {
-    echo "${GREEN}Battery Control Script - Available Commands:"
+    echo "BatteryControl commands with examples:"
+    echo
     echo "sudo batterycontrol                   # Check BatteryControl status"
     echo "sudo batterycontrol start             # Start BatteryControl"
     echo "sudo batterycontrol stop              # Stop BatteryControl"
