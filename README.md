@@ -1,17 +1,19 @@
-# **ChromeOS PowerControl**
-
-![Logo](https://i.imgur.com/yMQmKrF.png)
 
 
-# Beta: Custom Install location, logs moved to /var/log/, added /etc/init startup commands, unified config file, time stamps, bug fixes, and more. 
-## Requires Developer Mode - Supports AMD, ARM, and Intel.
-## - Control battery charging limit instead of relying on Adaptive Charging to maximize battery longevity. 
-## - Control CPU clock speed boost in relation to temperature; enabling lower temperatures under load and longer battery life.
-## - Control Fan speed in relation to temperature with built-in hysteresis and 0% RPM mode. 
-### - Features global commands for ease of use, config files that save settings, and an uninstaller to clean up after itself. 
-### - Optionally have BatteryControl, PowerControl, FanControl start on boot; as well as disabling Turbo Boost on boot if user has rootfs verification disabled.
 
-### __How to Install:__
+<p align="center">
+  <img src="https://i.imgur.com/yMQmKrF.png" alt="logo" />
+</p>  
+<br> <br> <br>
+
+- Requires Developer Mode - Supports AMD, ARM, and Intel. 
+- Control battery charging limit instead of relying on Adaptive Charging to maximize battery longevity.
+- Control CPU clock speed boost in relation to temperature; enabling lower temperatures under load and longer battery life.
+- Control Fan speed in relation to temperature with built-in hysteresis and 0% RPM mode.
+- Features global commands for ease of use, config files that save settings, and an uninstaller to clean up after itself.
+- Optionally have BatteryControl, PowerControl, FanControl start on boot; as well as disabling Turbo Boost on boot if user has rootfs verification disabled.
+
+__How to Install:__
 
 - Open crosh shell and run:
 
@@ -27,7 +29,7 @@
 - Installer has prompts to customize installation.
 - PowerControl, BatteryControl, and FanControl can run in the background and can be adjusted in real-time.
 
-### __Commands with examples:__
+__Commands with examples:__
 
 - `sudo powercontrol                     # Show status`
 - `sudo powercontrol start               # Throttle CPU based on temperature curve`
@@ -98,5 +100,4 @@ __FanControl:__
   https://github.com/WesBosch
   
 - Thanks to DennyL on ChromeOS discord for showing me how to enable sudo on crosh, test out PowerControl, and provide many great suggestions. 
-
 
