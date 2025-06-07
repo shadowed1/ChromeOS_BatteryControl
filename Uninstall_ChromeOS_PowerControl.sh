@@ -59,6 +59,9 @@ case "$choice" in
         remove_file_with_message "$INSTALL_DIR/fancontrol.conf"
 
         remove_file_with_message /usr/local/bin/ChromeOS_PowerControl_Installer.sh
+        remove_file_with_message /usr/local/bin/powercontrol_conf.sh
+        remove_file_with_message /usr/local/bin/fancontrol_conf.sh
+        remove_file_with_message /usr/local/bin/batterycontrol_conf.sh
 
         remove_file_with_message /usr/local/bin/powercontrol
         remove_file_with_message /usr/local/bin/batterycontrol
