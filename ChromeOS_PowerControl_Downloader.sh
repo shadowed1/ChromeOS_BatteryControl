@@ -4,7 +4,7 @@ GREEN=$(tput setaf 2)
 YELLOW=$(tput setaf 3)
 BLUE=$(tput setaf 4)
 MAGENTA=$(tput setaf 5)
-BLUE=$(tput setaf 6)
+CYAN=$(tput setaf 6)
 BOLD=$(tput bold)
 RESET=$(tput sgr0)
 echo ""
@@ -25,7 +25,7 @@ echo "      ${BOLD}${GREEN}Chrome${RESET}${BOLD}${RED}OS${RESET}${BOLD}${YELLOW}
 echo ""
 echo ""
 echo ""
-echo "${RED}${BOLD}Beta$RESET"
+echo "${BOLD}Beta$RESET"
 echo ""
 echo "${CYAN}${BOLD}Downloading to: /home/chronos/ChromeOS_PowerControl_Installer.sh $RESET"
 curl -L https://raw.githubusercontent.com/shadowed1/ChromeOS_PowerControl/beta/ChromeOS_PowerControl_Installer.sh -o /home/chronos/ChromeOS_PowerControl_Installer.sh
