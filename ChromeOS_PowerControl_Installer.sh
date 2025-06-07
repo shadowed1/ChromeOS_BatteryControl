@@ -44,13 +44,13 @@ for file in "${files[@]}"; do
 done
 
 curl -L https://raw.githubusercontent.com/shadowed1/ChromeOS_PowerControl/beta/powercontrol_conf.sh -o /usr/local/bin/powercontrol_conf.sh
-echo " /usr/local/bin/ChromeOS_PowerControl/powercontrol downloaded."
+echo " /usr/local/bin/ChromeOS_PowerControl/powercontrol_conf.sh downloaded."
 echo ""
 curl -L https://raw.githubusercontent.com/shadowed1/ChromeOS_PowerControl/beta/batterycontrol_conf.sh -o /usr/local/bin/batteryontrol_conf.sh
-echo " /usr/local/bin/ChromeOS_PowerControl/powercontrol downloaded."
+echo " /usr/local/bin/ChromeOS_PowerControl/batterycontrol_conf.sh downloaded."
 echo ""
 curl -L https://raw.githubusercontent.com/shadowed1/ChromeOS_PowerControl/beta/fancontrol_conf.sh -o /usr/local/bin/fancontrol_conf.sh
-echo " /usr/local/bin/ChromeOS_PowerControl/powercontrol downloaded."
+echo " /usr/local/bin/ChromeOS_PowerControl/fancontrol_conf.sh downloaded."
 echo ""
 
 detect_cpu_type
