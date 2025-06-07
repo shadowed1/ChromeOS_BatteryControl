@@ -86,15 +86,13 @@ set_thresholds() {
 
 show_help() {
     echo "${GREEN}Battery Control Script - Available Commands:"
+    echo "sudo batterycontrol                   # Check BatteryControl status"
+    echo "sudo batterycontrol start             # Start BatteryControl"
+    echo "sudo batterycontrol stop              # Stop BatteryControl"
+    echo "sudo batterycontrol set 80 75         # Set max/min battery charge thresholds"
+    echo "sudo batterycontrol startup           # Initiate batterycontrol /etc/init .conf installer"
+    echo "sudo batterycontrol help              # Help menu"
     echo
-    echo "  help               Show this help message."
-    echo "  set <MAX> <MIN>    Set battery charge thresholds."
-    echo "  start              Start BatteryControl monitoring."
-    echo "  stop               Stop BatteryControl monitoring."
-    echo "  (no command)       Show BatteryControl status."
-    echo "  startup y/n        Yes or No for starting on boot."
-    echo "  uninstall          Run the uninstaller script."
-    echo "$RESET"
 }
 
 battery_status() {
