@@ -1,4 +1,8 @@
 # **ChromeOS PowerControl**
+
+![Logo]([https://example.com/my-image.png](https://i.imgur.com/yMQmKrF.png))
+
+
 # Beta: Custom Install location, logs moved to /var/log/, added /etc/init startup commands, unified config file, time stamps, bug fixes, and more. 
 ## Requires Developer Mode - Supports AMD, ARM, and Intel.
 ## - Control battery charging limit instead of relying on Adaptive Charging to maximize battery longevity. 
