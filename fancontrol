@@ -107,7 +107,7 @@ if [ "$STEP_DOWN" != "$DEFAULT_STEP_DOWN" ]; then
 
 # === Fan logic with hysteresis ===
 cleanup() {
-    echo "${YELLOW}$(date '+%Y-%m-%d %H:%M:%S') - Restoring automatic fan control..." | tee -a "$LOG_FILE $RESET"
+    echo "${YELLOW} $(date '+%Y-%m-%d %H:%M:%S') - Restoring automatic fan control..." | tee -a "$LOG_FILE $RESET"
     sudo ectool autofanctrl
     rm -f "$RUN_FLAG" "$PID_FILE"
     exit 0
@@ -115,13 +115,13 @@ cleanup() {
 
 run_loop() {
     sudo ectool autofanctrl
-    echo "${GREEN}$(date '+%Y-%m-%d %H:%M:%S') - Fan curve started. Press Ctrl+C to stop." | tee -a "$LOG_FILE $RESET"
+    echo "${GREEN} $(date '+%Y-%m-%d %H:%M:%S') - Fan curve started. Press Ctrl+C to stop." | tee -a "$LOG_FILE ${RESET}"
     
     local last_duty=-1
 
     while [ -f "$RUN_FLAG" ]; do
         if [ ! -f "$ZONE_PATH" ]; then
-            echo "${RED}$(date '+%Y-%m-%d %H:%M:%S') - Thermal zone not found: $ZONE_PATH" | tee -a "$LOG_FILE $RED"
+            echo "${RED} $(date '+%Y-%m-%d %H:%M:%S') - Thermal zone not found: $ZONE_PATH" | tee -a "$LOG_FILE ${RESET}"
             cleanup
         fi
 
@@ -182,13 +182,13 @@ start() {
     fi
 
     nohup "$0" __monitor__ >> "$LOG_FILE" 2>&1 &
-    echo "${GREEN}$(date '+%Y-%m-%d %H:%M:%S') - FanControl started in background. Output is logged to $LOG_FILE $RESET"
+    echo "${GREEN} $(date '+%Y-%m-%d %H:%M:%S') - FanControl started in background. Output is logged to $LOG_FILE ${RESET}"
 }
 
 stop() {
     if [ -f "$PID_FILE" ]; then
         PID=$(cat "$PID_FILE")
-        echo "${YELLOW}$(date '+%Y-%m-%d %H:%M:%S') - Stopping fan curve (PID $PID)..." | tee -a "$LOG_FILE $RESET"
+        echo "${YELLOW} $(date '+%Y-%m-%d %H:%M:%S') - Stopping fan curve (PID $PID)..." | tee -a "$LOG_FILE ${RESET}"
         rm -f "$RUN_FLAG"
         kill "$PID" 2>/dev/null
         sleep 1
