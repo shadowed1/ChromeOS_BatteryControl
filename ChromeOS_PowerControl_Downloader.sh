@@ -33,3 +33,4 @@ echo "${YELLOW}${BOLD}sudo mv /home/chronos/ChromeOS_PowerControl_Installer.sh /
 echo ""
 echo "sudo bash /usr/local/bin/ChromeOS_PowerControl_Installer.sh"
 echo "$RESET"
+echo ""
