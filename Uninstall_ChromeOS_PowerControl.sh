@@ -1,5 +1,10 @@
 #!/bin/bash
-
+RED=$(tput setaf 1)
+GREEN=$(tput setaf 2)
+YELLOW=$(tput setaf 3)
+CYAN=$(tput setaf 6)
+BOLD=$(tput bold)
+RESET=$(tput sgr0)
 INSTALL_DIR_FILE="/usr/local/bin/ChromeOS_PowerControl.install_dir"
 if [ -f "$INSTALL_DIR_FILE" ]; then
     INSTALL_DIR=$(cat "$INSTALL_DIR_FILE")
@@ -22,9 +27,9 @@ remove_file_with_message() {
     fi
 }
 
-echo "0: Quit"
-echo "1: Remove only powercontrol.conf, batterycontrol.conf, fancontrol.conf, and no_turbo.conf from /etc/init (disables turbo on boot)."
-echo "2: Full Uninstall (remove all files, symlinks, startup files, and user config for powercontrol, batterycontrol, and fancontrol)."
+echo "${GREEN}0: Quit$RESET"
+echo "${YELLOW}1: Remove only powercontrol.conf, batterycontrol.conf, fancontrol.conf, and no_turbo.conf from /etc/init (disables turbo on boot).$RESET"
+echo "${RED}2: Full Uninstall (remove all files, symlinks, startup files, and user config for powercontrol, batterycontrol, and fancontrol).$RESET"
 
 read -rp "Enter (0-2): " choice
 
@@ -98,9 +103,9 @@ case "$choice" in
             echo "Installation directory not found or still contains files: $INSTALL_DIR"
         fi
 
-        echo "Uninstall complete."
+        echo "${GREEN}Uninstall complete.$RESET"
         ;;
     *)
-        echo "Invalid option."
+        echo "${RED}Invalid option.$RESET"
         ;;
 esac
