@@ -11,5 +11,3 @@ fi
 INSTALL_DIR="${INSTALL_DIR%/}"
 
 exec "$INSTALL_DIR/powercontrol" __monitor__ >> /var/log/powercontrol.log 2>&1
-exec "$INSTALL_DIR/fancontrol" __monitor__ >> /var/log/fancontrol.log 2>&1
-exec "$INSTALL_DIR/batterycontrol" __monitor__ >> /var/log/batterycontrol.log 2>&1
