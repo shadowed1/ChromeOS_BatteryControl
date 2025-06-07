@@ -36,9 +36,6 @@ echo "Installing to: $INSTALL_DIR"
 echo ""
 sudo mkdir -p "$INSTALL_DIR"
 
-curl -L https://raw.githubusercontent.com/shadowed1/ChromeOS_PowerControl/beta/powercontrol_conf.sh -o /usr/local/bin//powercontrol_conf.sh
-echo " /usr/local/bin/ChromeOS_PowerControl/powercontrol downloaded."
-
 declare -a files=("powercontrol" "batterycontrol" "fancontrol" "Uninstall_ChromeOS_PowerControl.sh" "LICENSE" "README.md" "no_turbo.conf" "batterycontrol.conf" "powercontrol.conf" "fancontrol.conf" "config.sh")
 for file in "${files[@]}"; do
     curl -L "https://raw.githubusercontent.com/shadowed1/ChromeOS_PowerControl/beta/$file" -o "$INSTALL_DIR/$file"
@@ -46,6 +43,15 @@ for file in "${files[@]}"; do
     echo ""
 done
 
+curl -L https://raw.githubusercontent.com/shadowed1/ChromeOS_PowerControl/beta/powercontrol_conf.sh -o /usr/local/bin/powercontrol_conf.sh
+echo " /usr/local/bin/ChromeOS_PowerControl/powercontrol downloaded."
+echo ""
+curl -L https://raw.githubusercontent.com/shadowed1/ChromeOS_PowerControl/beta/batterycontrol_conf.sh -o /usr/local/bin/batteryontrol_conf.sh
+echo " /usr/local/bin/ChromeOS_PowerControl/powercontrol downloaded."
+echo ""
+curl -L https://raw.githubusercontent.com/shadowed1/ChromeOS_PowerControl/beta/fancontrol_conf.sh -o /usr/local/bin/fancontrol_conf.sh
+echo " /usr/local/bin/ChromeOS_PowerControl/powercontrol downloaded."
+echo ""
 
 detect_cpu_type
 echo "Detected CPU Vendor: $CPU_VENDOR"
@@ -62,6 +68,8 @@ CONFIG_FILE="$INSTALL_DIR/config.sh"
 sudo touch "$LOG_DIR/powercontrol.log" "$LOG_DIR/batterycontrol.log" "$LOG_DIR/fancontrol.log"
 sudo chmod +x "$LOG_DIR/powercontrol.log" "$LOG_DIR/batterycontrol.log" "$LOG_DIR/fancontrol.log"
 sudo chmod +x /usr/local/bin/powercontrol_conf.sh
+sudo chmod +x /usr/local/bin/fancontrol_conf.sh
+sudo chmod +x /usr/local/bin/batterycontrol_conf.sh
 echo "Log files for PowerControl, BatteryControl, and FanControl are stored in /var/log/"
 echo ""
 USER_HOME="/home/chronos"
