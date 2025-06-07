@@ -1,8 +1,15 @@
 #!/bin/bash
-
+RED=$(tput setaf 1)
+GREEN=$(tput setaf 2)
+YELLOW=$(tput setaf 3)
+CYAN=$(tput setaf 6)
+BOLD=$(tput bold)
+RESET=$(tput sgr0)
 detect_cpu_type() {
     CPU_VENDOR=$(grep -m1 'vendor_id' /proc/cpuinfo | awk '{print $3}' || echo "unknown")
-    
+    IS_INTEL=0
+    IS_AMD=0
+    IS_ARM=0
     case "$CPU_VENDOR" in
         GenuineIntel)
             IS_INTEL=1
@@ -25,12 +32,11 @@ detect_cpu_type() {
             ;;
     esac
 }
-echo "Enabling sudo in crosh or run in VT-2 is required for this to download successfully."
+echo "${RED}Enabling sudo in crosh or run in VT-2 is required for this to download successfully.$RESET"
 echo ""
-read -rp "Enter Install Path - leave blank for: /usr/local/bin/ChromeOS_PowerControl: " INSTALL_DIR
+read -rp "${GREEN}${BOLD}Enter Install Path - leave blank for: /usr/local/bin/ChromeOS_PowerControl:$RESET" INSTALL_DIR
 INSTALL_DIR="${INSTALL_DIR:-/usr/local/bin/ChromeOS_PowerControl}"
 INSTALL_DIR="${INSTALL_DIR%/}"
-echo "$INSTALL_DIR" | sudo tee /usr/local/bin/ChromeOS_PowerControl.install_dir > /dev/null
 
 echo "Installing to: $INSTALL_DIR"
 echo ""
@@ -66,7 +72,7 @@ sudo touch "$INSTALL_DIR/.fan_curve_pid" "$INSTALL_DIR/.fancontrol_tail_fan_moni
 LOG_DIR="/var/log"
 CONFIG_FILE="$INSTALL_DIR/config.sh"
 sudo touch "$LOG_DIR/powercontrol.log" "$LOG_DIR/batterycontrol.log" "$LOG_DIR/fancontrol.log"
-sudo chmod +x "$LOG_DIR/powercontrol.log" "$LOG_DIR/batterycontrol.log" "$LOG_DIR/fancontrol.log"
+sudo chmod 644 "$LOG_DIR/powercontrol.log" "$LOG_DIR/batterycontrol.log" "$LOG_DIR/fancontrol.log"
 sudo chmod +x /usr/local/bin/powercontrol_conf.sh
 sudo chmod +x /usr/local/bin/fancontrol_conf.sh
 sudo chmod +x /usr/local/bin/batterycontrol_conf.sh
