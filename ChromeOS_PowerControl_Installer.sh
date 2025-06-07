@@ -46,7 +46,7 @@ done
 curl -L https://raw.githubusercontent.com/shadowed1/ChromeOS_PowerControl/beta/powercontrol_conf.sh -o /usr/local/bin/powercontrol_conf.sh
 echo " /usr/local/bin/ChromeOS_PowerControl/powercontrol_conf.sh downloaded."
 echo ""
-curl -L https://raw.githubusercontent.com/shadowed1/ChromeOS_PowerControl/beta/batterycontrol_conf.sh -o /usr/local/bin/batteryontrol_conf.sh
+curl -L https://raw.githubusercontent.com/shadowed1/ChromeOS_PowerControl/beta/batterycontrol_conf.sh -o /usr/local/bin/batterycontrol_conf.sh
 echo " /usr/local/bin/ChromeOS_PowerControl/batterycontrol_conf.sh downloaded."
 echo ""
 curl -L https://raw.githubusercontent.com/shadowed1/ChromeOS_PowerControl/beta/fancontrol_conf.sh -o /usr/local/bin/fancontrol_conf.sh
