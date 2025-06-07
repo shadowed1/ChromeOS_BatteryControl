@@ -149,7 +149,7 @@ fi
 enable_component_on_boot() {
     local component="$1"
     local config_file="$2"
-    read -rp "${YELLOW}Do you want $component enabled on boot? (y/n):$RESET " move_config
+    read -rp "${YELLOW}${CYAN}Do you want $component enabled on boot? (y/n):$RESET " move_config
     if [[ "$move_config" =~ ^[Yy]$ ]]; then
         sudo cp "$config_file" /etc/init/
         echo "$component will start on boot."
@@ -170,7 +170,7 @@ start_component_now() {
     read -rp "${BOLD}${GREEN}Do you want to start $component now in the background? (y/n): $RESET " start_now
     if [[ "$start_now" =~ ^[Yy]$ ]]; then
         sudo "$command" start
-        echo "${BOLD}$component started in the background. $RESET"
+        echo "component started in the background."
         echo ""
     else
         echo "You can run it later with: sudo $command start"
@@ -194,7 +194,7 @@ echo "     ${GREEN}██${RESET}              ${YELLOW}██${RESET}     "
 echo "       ${GREEN}████${RESET}        ${YELLOW}████${RESET}       "
 echo "           ${GREEN}████████████${RESET}           "
 echo ""
-echo "        ${BOLD}${GREEN}Chrome${RESET}${BOLD}${RED}OS${RESET}${BOLD}${YELLOW}_${RESET}${BOLD}${CYAN}PowerControl${RESET}"
+echo "      ${BOLD}${GREEN}Chrome${RESET}${BOLD}${RED}OS${RESET}${BOLD}${YELLOW}_${RESET}${BOLD}${CYAN}PowerControl${RESET}"
 echo ""
 
 echo ""
