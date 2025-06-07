@@ -316,7 +316,7 @@ while [ -f "$RUN_FLAG" ]; do
     sleep 1
 done
 
-    echo "PowerControl stopped."
+    echo "${YELLOW}PowerControl stopped.$RESET"
     rm -f "$PID_FILE"
 }
 
@@ -353,14 +353,14 @@ show_status() {
     if [ -f "$PID_FILE" ]; then
         PID=$(cat "$PID_FILE")
         if ps -p "$PID" > /dev/null 2>&1; then
-            echo "  Status: RUNNING (PID $PID)"
+            echo "${GREEN}  Status: RUNNING (PID $PID)${RESET}"
         else
             rm -f "$PID_FILE"
             rm -f "$RUN_FLAG"
-            echo "  Status: STOPPED"
+            echo "${YELLOW}  Status: STOPPED ${YELLOW}"
         fi
     else
-        echo "  Status: STOPPED"
+        echo "${YELLOW}  Status: STOPPED ${YELLOW}"
     fi
 
     echo "  Configured max_temp: $MAX_TEMP°C"
@@ -407,7 +407,7 @@ stop_monitoring() {
 
     PID=$(cat "$PID_FILE")
     if ps -p "$PID" > /dev/null 2>&1; then
-        echo "$(date '+%Y-%m-%d %H:%M:%S') - Stopping PowerControl (PID $PID)..."  | tee -a "$POWER_LOG"
+        echo "${YELLOW}$(date '+%Y-%m-%d %H:%M:%S') - Stopping PowerControl (PID $PID)...$RESET"  | tee -a "$POWER_LOG"
         rm -f "$RUN_FLAG"
         kill "$PID"
 
@@ -512,7 +512,7 @@ if [ -f "$POWER_LOG" ] && [ "$(stat -c%s "$POWER_LOG")" -gt 32768 ]; then
 fi
 
 nohup "$0" __monitor__ >> "$POWER_LOG" 2>&1 &
-echo "$(date '+%Y-%m-%d %H:%M:%S') - PowerControl monitoring started in background. Output is logged to $POWER_LOG"
+echo "${GREEN} $(date '+%Y-%m-%d %H:%M:%S') - PowerControl monitoring started in background. Output is logged to $POWER_LOG ${RESET}"
 
         ;;
     stop)
