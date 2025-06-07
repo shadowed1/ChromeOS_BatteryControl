@@ -11,7 +11,7 @@ INSTALL_DIR="${INSTALL_DIR%/}"
 CONFIG_FILE="$INSTALL_DIR/config.sh"
 
 POWER_LOG="/var/log/powercontrol.log"
-RUN_FLAG="$INSTALL_DIR/.powercontrol_enabled"F
+RUN_FLAG="$INSTALL_DIR/.powercontrol_enabled"
 PID_FILE="$INSTALL_DIR/.powercontrol_pid"
 NO_TURBO_BACKUP="$INSTALL_DIR/.no_turbo_backup"
 CPU_VENDOR=$(grep -m1 'vendor_id' /proc/cpuinfo | awk '{print $3}' || echo "unknown")
