@@ -454,21 +454,20 @@ uninstall_script() {
 
 
 show_help() {
-    echo "PowerControl Script - Available Commands:"
-    echo
-    echo "  help                  Show this help message."
-    echo "  start                 Start PowerControl monitoring in the background."
-    echo "  stop                  Stop PowerControl monitoring and restore Turbo Boost."
-    echo "  max_temp <°C>         Set maximum allowed CPU temperature."
-    echo "  min_temp <°C>         Set minimum CPU temperature before throttling begins."
-    echo "  min_perf_pct <pct>    Set minimum performance percentage (10–100)."
-    echo "  max_perf_pct <pct>    Show or set max performance percentage (10–100)."
-    echo "  startup 0|1           Toggle 1 (on) 0 (off) for starting on boot."
-    echo "  no_turbo {0|1}        Enable (0) or disable (1) Intel Turbo Boost manually."
-    echo "  monitor               Show updating in real time."
-    echo "  uninstall             Run the PowerControl uninstaller script."
-    echo "  (no command)          Show PowerControl status."
-    echo
+    echo "PowerControl commands with examples:"
+    echo "sudo powercontrol                     # Show status"
+    echo "sudo powercontrol start               # Throttle CPU based on temperature curve"
+    echo "sudo powercontrol stop                # Restore default CPU settings"
+    echo "sudo powercontrol no_turbo 1          # Disable turbo boost"
+    echo "sudo powercontrol max_perf_pct 75     # Set max performance percentage"
+    echo "sudo powercontrol min_perf_pct 50     # Set minimum performance at max temp"
+    echo "sudo powercontrol max_temp 86         # Max temperature threshold"
+    echo "sudo powercontrol min_temp 60         # Min temperature threshold"
+    echo "sudo powercontrol monitor             # Live temperature monitoring"
+    echo "sudo powercontrol startup             # Initiate powercontrol /etc/init .conf installer"
+    echo "sudo powercontrol help                # Help menu"
+    echo "sudo powercontrol uninstall           # Initiate uninstaller
+    echo ""
 }
 
 max_perf_pct() {
