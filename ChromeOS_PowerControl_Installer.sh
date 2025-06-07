@@ -110,7 +110,7 @@ echo ""
 echo "${GREEN}${BOLD}Installing to: $INSTALL_DIR $RESET"
 
 if [ "$IS_INTEL" -eq 1 ]; then
-    read -rp "${CYAN}Do you want Intel Turbo Boost disabled on boot? (y/n):$RESET " move_no_turbo
+    read -rp "${BOLD}${CYAN}Do you want Intel Turbo Boost disabled on boot? (y/n):$RESET " move_no_turbo
     if [[ "$move_no_turbo" =~ ^[Yy]$ ]]; then
         sudo cp "$INSTALL_DIR/no_turbo.conf" /etc/init/
         echo "Turbo Boost will be disabled on restart."
@@ -120,7 +120,7 @@ if [ "$IS_INTEL" -eq 1 ]; then
         echo ""
     fi
 
-    read -rp "${CYAN}Do you want to disable Intel Turbo Boost now? (y/n):$RESET " run_no_turbo
+    read -rp "${BOLD}${CYAN}Do you want to disable Intel Turbo Boost now? (y/n):$RESET " run_no_turbo
     if [[ "$run_no_turbo" =~ ^[Yy]$ ]]; then
         echo 1 | sudo tee /sys/devices/system/cpu/intel_pstate/no_turbo > /dev/null
         echo "Turbo Boost disabled immediately."
@@ -134,7 +134,7 @@ else
     echo ""
 fi
 
-read -rp "${YELLOW}Do you want to create global commands 'powercontrol', 'batterycontrol', and 'fancontrol'? (y/n):$RESET " link_cmd
+read -rp "${BOLD}${YELLOW}Do you want to create global commands 'powercontrol', 'batterycontrol', and 'fancontrol'? (y/n):$RESET " link_cmd
 if [[ "$link_cmd" =~ ^[Yy]$ ]]; then
     sudo ln -sf "$INSTALL_DIR/powercontrol" /usr/local/bin/powercontrol
     sudo ln -sf "$INSTALL_DIR/batterycontrol" /usr/local/bin/batterycontrol
@@ -167,7 +167,7 @@ enable_component_on_boot "FanControl" "$INSTALL_DIR/fancontrol.conf"
 start_component_now() {
     local component="$1"
     local command="$2"
-    read -rp "${GREEN}Do you want to start $component now in the background? (y/n): $RESET " start_now
+    read -rp "${BOLD}${GREEN}Do you want to start $component now in the background? (y/n): $RESET " start_now
     if [[ "$start_now" =~ ^[Yy]$ ]]; then
         sudo "$command" start
         echo "${BOLD}$component started in the background. $RESET"
@@ -186,15 +186,15 @@ echo ""
 echo "           ${RED}████████████${RESET}           "
 echo "       ${RED}████${RESET}        ${RED}████${RESET}       "
 echo "     ${RED}██${RESET}              ${YELLOW}██${RESET}     "
-echo "   ${GREEN}██${RESET}     ${BLUE}██████${RESET}     ${YELLOW}██${RESET}   "
-echo "  ${GREEN}██${RESET}     ${BLUE}████████${RESET}     ${YELLOW}██${RESET}  "
-echo "  ${GREEN}██${RESET}     ${BLUE}████████${RESET}     ${YELLOW}██${RESET}  "
-echo "   ${GREEN}██${RESET}     ${BLUE}██████${RESET}     ${YELLOW}██${RESET}   "
+echo "   ${GREEN}██${RESET}     ${CYAN}██████${RESET}     ${YELLOW}██${RESET}   "
+echo "  ${GREEN}██${RESET}     ${CYAN}████████${RESET}     ${YELLOW}██${RESET}  "
+echo "  ${GREEN}██${RESET}     ${CYAN}████████${RESET}     ${YELLOW}██${RESET}  "
+echo "   ${GREEN}██${RESET}     ${CYAN}██████${RESET}     ${YELLOW}██${RESET}   "
 echo "     ${GREEN}██${RESET}              ${YELLOW}██${RESET}     "
 echo "       ${GREEN}████${RESET}        ${YELLOW}████${RESET}       "
 echo "           ${GREEN}████████████${RESET}           "
 echo ""
-echo "           ${BOLD}${BLUE}Chrome${RESET}${BOLD}${YELLOW}OS${RESET}${BOLD}${RED}_${RESET}${BOLD}${GREEN}PowerControl${RESET}"
+echo "           ${RED}${CYAN}Chrome${RESET}${BOLD}${YELLOW}OS${RESET}${BOLD}${RED}_${RESET}${BOLD}${GREEN}PowerControl${RESET}"
 echo ""
 
 echo ""
