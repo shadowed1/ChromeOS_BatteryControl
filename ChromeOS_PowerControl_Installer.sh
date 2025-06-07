@@ -2,6 +2,8 @@
 RED=$(tput setaf 1)
 GREEN=$(tput setaf 2)
 YELLOW=$(tput setaf 3)
+BLUE=$(tput setaf 4)
+MAGENTA=$(tput setaf 5)
 CYAN=$(tput setaf 6)
 BOLD=$(tput bold)
 RESET=$(tput sgr0)
@@ -149,7 +151,7 @@ fi
 enable_component_on_boot() {
     local component="$1"
     local config_file="$2"
-    read -rp "${YELLOW}${CYAN}Do you want $component enabled on boot? (y/n):$RESET " move_config
+    read -rp "${BOLD}${MAGENTA}Do you want $component enabled on boot? (y/n):$RESET " move_config
     if [[ "$move_config" =~ ^[Yy]$ ]]; then
         sudo cp "$config_file" /etc/init/
         echo "$component will start on boot."
