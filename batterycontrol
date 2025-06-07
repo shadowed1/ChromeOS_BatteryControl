@@ -215,9 +215,9 @@ case "$1" in
         if [ -f "$CONF_SOURCE" ]; then
             echo "Copying batterycontrol.conf to /etc/init/..."
             sudo cp "$CONF_SOURCE" "$CONF_TARGET"
-            echo "powercontrol.conf copied."
+            echo "batterycontrol.conf copied."
         else
-            echo "powercontrol.conf not found at $CONF_SOURCE"
+            echo "${RED} batterycontrol.conf not found at $CONF_SOURCE $RESET"
         fi
     else
         echo "BatteryControl will not startup automatically."
