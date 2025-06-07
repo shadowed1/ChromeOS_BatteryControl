@@ -1,5 +1,10 @@
 #!/bin/bash
-
+RED=$(tput setaf 1)
+GREEN=$(tput setaf 2)
+YELLOW=$(tput setaf 3)
+CYAN=$(tput setaf 6)
+BOLD=$(tput bold)
+RESET=$(tput sgr0)
 INSTALL_DIR_FILE=/usr/local/bin/ChromeOS_PowerControl.install_dir
 if [ -f "$INSTALL_DIR_FILE" ]; then
     INSTALL_DIR=$(cat "$INSTALL_DIR_FILE")
@@ -100,7 +105,7 @@ if [ "$STEP_DOWN" != "$DEFAULT_STEP_DOWN" ]; then
 
 # === Fan logic with hysteresis ===
 cleanup() {
-    echo "$(date '+%Y-%m-%d %H:%M:%S') - Restoring automatic fan control..." | tee -a "$LOG_FILE"
+    echo "${YELLOW}$(date '+%Y-%m-%d %H:%M:%S') - Restoring automatic fan control..." | tee -a "$LOG_FILE $RESET"
     sudo ectool autofanctrl
     rm -f "$RUN_FLAG" "$PID_FILE"
     exit 0
@@ -108,13 +113,13 @@ cleanup() {
 
 run_loop() {
     sudo ectool autofanctrl
-    echo "$(date '+%Y-%m-%d %H:%M:%S') - Fan curve started. Press Ctrl+C to stop." | tee -a "$LOG_FILE"
+    echo "${GREEN}$(date '+%Y-%m-%d %H:%M:%S') - Fan curve started. Press Ctrl+C to stop." | tee -a "$LOG_FILE $RESET"
     
     local last_duty=-1
 
     while [ -f "$RUN_FLAG" ]; do
         if [ ! -f "$ZONE_PATH" ]; then
-            echo "$(date '+%Y-%m-%d %H:%M:%S') - Thermal zone not found: $ZONE_PATH" | tee -a "$LOG_FILE"
+            echo "${RED}$(date '+%Y-%m-%d %H:%M:%S') - Thermal zone not found: $ZONE_PATH" | tee -a "$LOG_FILE $RED"
             cleanup
         fi
 
@@ -175,13 +180,13 @@ start() {
     fi
 
     nohup "$0" __monitor__ >> "$LOG_FILE" 2>&1 &
-    echo "$(date '+%Y-%m-%d %H:%M:%S') - FanControl started in background. Output is logged to $LOG_FILE"
+    echo "${GREEN}$(date '+%Y-%m-%d %H:%M:%S') - FanControl started in background. Output is logged to $LOG_FILE $RESET"
 }
 
 stop() {
     if [ -f "$PID_FILE" ]; then
         PID=$(cat "$PID_FILE")
-        echo "$(date '+%Y-%m-%d %H:%M:%S') - Stopping fan curve (PID $PID)..." | tee -a "$LOG_FILE"
+        echo "${YELLOW}$(date '+%Y-%m-%d %H:%M:%S') - Stopping fan curve (PID $PID)..." | tee -a "$LOG_FILE $RESET"
         rm -f "$RUN_FLAG"
         kill "$PID" 2>/dev/null
         sleep 1
