@@ -1,5 +1,10 @@
 #!/bin/bash
-
+RED=$(tput setaf 1)
+GREEN=$(tput setaf 2)
+YELLOW=$(tput setaf 3)
+CYAN=$(tput setaf 6)
+BOLD=$(tput bold)
+RESET=$(tput sgr0)
 INSTALL_DIR_FILE="/usr/local/bin/ChromeOS_PowerControl.install_dir"
 if [ -f "$INSTALL_DIR_FILE" ]; then
     INSTALL_DIR=$(cat "$INSTALL_DIR_FILE")
@@ -78,7 +83,7 @@ set_thresholds() {
 }
 
 show_help() {
-    echo "Battery Control Script - Available Commands:"
+    echo "${GREEN}Battery Control Script - Available Commands:"
     echo
     echo "  help               Show this help message."
     echo "  set <MAX> <MIN>    Set battery charge thresholds."
@@ -87,7 +92,7 @@ show_help() {
     echo "  (no command)       Show BatteryControl status."
     echo "  startup y/n        Yes or No for starting on boot."
     echo "  uninstall          Run the uninstaller script."
-    echo
+    echo "$RESET"
 }
 
 battery_status() {
@@ -96,16 +101,16 @@ battery_status() {
         if [ -f "$PID_FILE" ]; then
             PID=$(cat "$PID_FILE")
             if ps -p "$PID" > /dev/null 2>&1; then
-                echo "BatteryControl is: ENABLED (running, PID $PID)"
+                echo "${GREEN}BatteryControl is: ENABLED (running, PID $PID)$RESET"
             else
-                echo "BatteryControl is: ENABLED (but process is NOT running)"
+                echo "${YELLOW}BatteryControl is: ENABLED (but process is NOT running)$RESET"
                 rm -f "$PID_FILE"
             fi
         else
-            echo "BatteryControl is: ENABLED (PID not found)"
+            echo "${YELLOW}BatteryControl is: ENABLED (PID not found)$RESET"
         fi
     else
-        echo " BatteryControl is: DISABLED"
+        echo "${RED}BatteryControl is: DISABLED$RESET"
     fi
 
     echo "  CHARGE_MAX: $CHARGE_MAX"
@@ -184,7 +189,7 @@ case "$1" in
         fi
 
         nohup "$0" __monitor__ >> "$LOG_FILE" 2>&1 &
-        echo "$(date '+%Y-%m-%d %H:%M:%S') - BatteryControl monitoring started in background. Output is logged to $LOG_FILE"
+        echo "${GREEN} $(date '+%Y-%m-%d %H:%M:%S') - BatteryControl monitoring started in background. Output is logged to $LOG_FILE $RESET"
         ;;
     stop)
         stop_monitoring
