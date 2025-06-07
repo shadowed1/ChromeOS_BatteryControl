@@ -116,8 +116,9 @@ cleanup() {
 run_loop() {
     sudo ectool autofanctrl
     echo "${GREEN} $(date '+%Y-%m-%d %H:%M:%S') - Fan curve started. Press Ctrl+C to stop." | tee -a "$LOG_FILE ${RESET}"
-    
+
     local last_duty=-1
+    local last_reload_time=0
 
     while [ -f "$RUN_FLAG" ]; do
         if [ ! -f "$ZONE_PATH" ]; then
@@ -125,7 +126,11 @@ run_loop() {
             cleanup
         fi
 
-        load_config
+        now=$(date +%s)
+        if (( now - last_reload_time >= 10 )); then
+            load_config
+            last_reload_time=$now
+        fi
 
         RAW_TEMP=$(cat "$ZONE_PATH")
         TEMP_C=$((RAW_TEMP / 1000))
@@ -172,6 +177,7 @@ run_loop() {
 
     cleanup
 }
+
 
 # === Start / Stop / Monitor ===
 start() {
