@@ -1,5 +1,12 @@
 #!/bin/bash
-
+RED=$(tput setaf 1)
+GREEN=$(tput setaf 2)
+YELLOW=$(tput setaf 3)
+BLUE=$(tput setaf 4)
+MAGENTA=$(tput setaf 5)
+CYAN=$(tput setaf 6)
+BOLD=$(tput bold)
+RESET=$(tput sgr0)
 INSTALL_DIR_FILE="/usr/local/bin/ChromeOS_PowerControl.install_dir"
 if [ -f "$INSTALL_DIR_FILE" ]; then
     INSTALL_DIR=$(cat "$INSTALL_DIR_FILE")
@@ -137,7 +144,7 @@ set_max_perf_pct() {
         if [ -w "$PERF_PATH" ]; then
             echo "$pct" | tee "$PERF_PATH" > /dev/null
         else
-            echo "Permission denied: Cannot write to $PERF_PATH" >&2
+            echo "${RED}Permission denied: Cannot write to $PERF_PATH ${RESET}" >&2
             exit 1
         fi
     elif [ "$IS_AMD" -eq 1 ] || [ "$IS_ARM" -eq 1 ]; then
@@ -148,7 +155,7 @@ set_max_perf_pct() {
         if [ -w "$PERF_PATH" ]; then
             echo "$target_freq" | tee "$PERF_PATH" > /dev/null
         else
-            echo "Permission denied: Cannot write to $PERF_PATH" >&2
+            echo "${RED}Permission denied: Cannot write to $PERF_PATH ${RESET}" >&2
             exit 1
         fi
         save_config
@@ -255,53 +262,59 @@ start_monitoring_loop() {
     echo "Starting PowerControl (PID $$)."
     
 
-    while [ -f "$RUN_FLAG" ]; do
+    last_reload_time=0
+
+while [ -f "$RUN_FLAG" ]; do
+    now=$(date +%s)
+    if (( now - last_reload_time >= 10 )); then
         load_config
         validate_config
         min_temp_c=$MIN_TEMP
         high_temp_c=$MAX_TEMP
         min_perf_pct=$MIN_PERF_PCT
         max_perf_pct=$MAX_PERF_PCT
+        last_reload_time=$now
+    fi
 
-        temp_c=$(get_temp)
-        if [ $? -ne 0 ]; then
-            echo "Failed to get temperature. Retrying..."
-            sleep 1
-            continue
-        fi
-
-        if [ -z "$temp_c" ]; then
-            echo "Error: No temperature value returned. Retrying..."
-            sleep 1
-            continue
-        fi
-
-        if ! [[ "$min_temp_c" =~ ^[0-9]+$ && "$high_temp_c" =~ ^[0-9]+$ && "$max_perf_pct" =~ ^[0-9]+$ && "$min_perf_pct" =~ ^[0-9]+$ ]]; then
-            echo "Invalid configuration values detected. Skipping."
-            sleep 1
-            continue
-        fi
-
-        current_pct=$(cat "$PERF_PATH" 2>/dev/null || echo "0")
-
-        if (( temp_c <= min_temp_c )); then
-            pct=$max_perf_pct
-        elif (( temp_c >= high_temp_c )); then
-            pct=$min_perf_pct
-        else
-            delta_c=$(( high_temp_c - min_temp_c ))
-            temp_offset=$(( temp_c - min_temp_c ))
-            reduction=$(( (max_perf_pct - min_perf_pct) * temp_offset / delta_c ))
-            pct=$(( max_perf_pct - reduction ))
-        fi
-
-        if [[ "$current_pct" != "$pct" ]]; then
-            echo "$(date '+%Y-%m-%d %H:%M:%S') - CPU $temp_c°C -> Clockspeed $pct%" | tee -a "$POWER_LOG"
-            set_max_perf_pct "$pct"
-        fi
-
+    temp_c=$(get_temp)
+    if [ $? -ne 0 ]; then
+        echo "Failed to get temperature. Retrying..."
         sleep 1
-    done
+        continue
+    fi
+
+    if [ -z "$temp_c" ]; then
+        echo "Error: No temperature value returned. Retrying..."
+        sleep 1
+        continue
+    fi
+
+    if ! [[ "$min_temp_c" =~ ^[0-9]+$ && "$high_temp_c" =~ ^[0-9]+$ && "$max_perf_pct" =~ ^[0-9]+$ && "$min_perf_pct" =~ ^[0-9]+$ ]]; then
+        echo "Invalid configuration values detected. Skipping."
+        sleep 1
+        continue
+    fi
+
+    current_pct=$(cat "$PERF_PATH" 2>/dev/null || echo "0")
+
+    if (( temp_c <= min_temp_c )); then
+        pct=$max_perf_pct
+    elif (( temp_c >= high_temp_c )); then
+        pct=$min_perf_pct
+    else
+        delta_c=$(( high_temp_c - min_temp_c ))
+        temp_offset=$(( temp_c - min_temp_c ))
+        reduction=$(( (max_perf_pct - min_perf_pct) * temp_offset / delta_c ))
+        pct=$(( max_perf_pct - reduction ))
+    fi
+
+    if [[ "$current_pct" != "$pct" ]]; then
+        echo "$(date '+%Y-%m-%d %H:%M:%S') - CPU $temp_c°C -> Clockspeed $pct%" | tee -a "$POWER_LOG"
+        set_max_perf_pct "$pct"
+    fi
+
+    sleep 1
+done
 
     echo "PowerControl stopped."
     rm -f "$PID_FILE"
