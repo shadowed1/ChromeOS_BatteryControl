@@ -455,6 +455,7 @@ uninstall_script() {
 
 show_help() {
     echo "PowerControl commands with examples:"
+    echo ""
     echo "sudo powercontrol                     # Show status"
     echo "sudo powercontrol start               # Throttle CPU based on temperature curve"
     echo "sudo powercontrol stop                # Restore default CPU settings"
