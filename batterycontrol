@@ -123,6 +123,8 @@ start_monitoring_loop() {
 
     echo "$(date '+%Y-%m-%d %H:%M:%S') - BatteryControl started - keep it running for it to remain functioning. (PID $$)."
 
+    local last_reload_time=0
+
     while true; do
         if [ ! -f "$RUN_FLAG" ]; then
             echo "$(date '+%Y-%m-%d %H:%M:%S') - BatteryControl disabled, exiting monitoring loop."
@@ -130,7 +132,11 @@ start_monitoring_loop() {
             exit 0
         fi
 
-        load_config
+        now=$(date +%s)
+        if (( now - last_reload_time >= 30 )); then
+            load_config
+            last_reload_time=$now
+        fi
 
         if [ -f "$BATTERY_PATH" ]; then
             CHARGE=$(cat "$BATTERY_PATH" 2>/dev/null)
@@ -159,6 +165,7 @@ start_monitoring_loop() {
         sleep 10
     done
 }
+
 
 stop_monitoring() {
     if [ -f "$PID_FILE" ]; then
