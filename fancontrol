@@ -320,6 +320,7 @@ show_help() {
     echo "sudo fancontrol startup               # Initiate /etc/init .conf installer"
     echo "sudo fancontrol help                  # Help menu"
     echo ""
+}
 
 case "$1" in
     start) start ;;
