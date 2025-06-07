@@ -194,7 +194,7 @@ echo "     ${GREEN}██${RESET}              ${YELLOW}██${RESET}     "
 echo "       ${GREEN}████${RESET}        ${YELLOW}████${RESET}       "
 echo "           ${GREEN}████████████${RESET}           "
 echo ""
-echo "${BOLD}${GREEN}Chrome${RESET}${BOLD}${RED}OS${RESET}${BOLD}${YELLOW}_${RESET}${BOLD}${CYAN}PowerControl${RESET}"
+echo "        ${BOLD}${GREEN}Chrome${RESET}${BOLD}${RED}OS${RESET}${BOLD}${YELLOW}_${RESET}${BOLD}${CYAN}PowerControl${RESET}"
 echo ""
 
 echo ""
