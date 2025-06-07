@@ -1,6 +1,6 @@
 # **ChromeOS PowerControl**
 
-![Logo]([https://example.com/my-image.png](https://i.imgur.com/yMQmKrF.png))
+![Logo](https://i.imgur.com/yMQmKrF.png)
 
 
 # Beta: Custom Install location, logs moved to /var/log/, added /etc/init startup commands, unified config file, time stamps, bug fixes, and more. 
