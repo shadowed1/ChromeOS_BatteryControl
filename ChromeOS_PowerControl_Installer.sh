@@ -109,7 +109,7 @@ echo "IS_ARM=$IS_ARM" >> "$CONFIG_FILE"
 echo ""
 
 if [ "$IS_INTEL" -eq 1 ]; then
-    read -rp "${BLUE}Do you want Intel Turbo Boost disabled on boot? (y/n):$RESET " move_no_turbo
+    read -rp "${CYAN}Do you want Intel Turbo Boost disabled on boot? (y/n):$RESET " move_no_turbo
     if [[ "$move_no_turbo" =~ ^[Yy]$ ]]; then
         sudo cp "$INSTALL_DIR/no_turbo.conf" /etc/init/
         echo "Turbo Boost will be disabled on restart."
@@ -119,7 +119,7 @@ if [ "$IS_INTEL" -eq 1 ]; then
         echo ""
     fi
 
-    read -rp "${BLUE}Do you want to disable Intel Turbo Boost now? (y/n):$RESET " run_no_turbo
+    read -rp "${CYAN}Do you want to disable Intel Turbo Boost now? (y/n):$RESET " run_no_turbo
     if [[ "$run_no_turbo" =~ ^[Yy]$ ]]; then
         echo 1 | sudo tee /sys/devices/system/cpu/intel_pstate/no_turbo > /dev/null
         echo "Turbo Boost disabled immediately."
@@ -166,10 +166,10 @@ enable_component_on_boot "FanControl" "$INSTALL_DIR/fancontrol.conf"
 start_component_now() {
     local component="$1"
     local command="$2"
-    read -rp "Do you want to start $component now in the background? (y/n): " start_now
+    read -rp "${GREEN}Do you want to start $component now in the background? (y/n): $RESET " start_now
     if [[ "$start_now" =~ ^[Yy]$ ]]; then
         sudo "$command" start
-        echo "$component started in the background."
+        echo "${BOLD}$component started in the background. $RESET"
         echo ""
     else
         echo "You can run it later with: sudo $command start"
@@ -182,9 +182,9 @@ start_component_now "PowerControl" "$INSTALL_DIR/powercontrol"
 start_component_now "FanControl" "$INSTALL_DIR/fancontrol"
 
 echo ""
-echo "Commands with examples:"
+echo "${BOLD}Commands with examples: $RESET"
 echo ""
-echo "${BLUE}# PowerControl:"
+echo "${CYAN}# PowerControl:"
 echo "sudo powercontrol                     # Show status"
 echo "sudo powercontrol start               # Throttle CPU based on temperature curve"
 echo "sudo powercontrol stop                # Restore default CPU settings"
@@ -215,5 +215,5 @@ echo "sudo fancontrol stepup 20             # Fan step-up %"
 echo "sudo fancontrol stepdown 1            # Fan step-down %" 
 echo "sudo fancontrol help                  # Help menu"
 echo "$RESET"
-echo "${RED}sudo powercontrol uninstall           # Run uninstaller"
-echo "Alternative: sudo bash "$INSTALL_DIR/Uninstall_ChromeOS_PowerControl.sh" $RESET"
+echo "${RED}sudo powercontrol uninstall           # Run uninstaller $RESET"
+echo "${BOLD}Alternative:$RESET ${RED}sudo bash "$INSTALL_DIR/Uninstall_ChromeOS_PowerControl.sh" $RESET"
