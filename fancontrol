@@ -74,8 +74,6 @@ validate_config() {
     fi
 }
 
-
-
 save_config() {
 
 if [ "$FAN_MAX_TEMP" != "$DEFAULT_FAN_MAX_TEMP" ]; then
@@ -177,7 +175,6 @@ run_loop() {
 
     cleanup
 }
-
 
 # === Start / Stop / Monitor ===
 start() {
@@ -323,10 +320,8 @@ show_help() {
     echo "sudo fancontrol stepdown 1            # Fan step-down %"
     echo "sudo fancontrol startup               # Initiate /etc/init .conf installer 
     echo "sudo fancontrol help                  # Help menu
+    echo ""
 
-
-
-# === Entry Point ===
 case "$1" in
     start) start ;;
     stop) stop ;;
