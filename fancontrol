@@ -317,8 +317,8 @@ show_help() {
     echo "sudo fancontrol max_fan 100           # Max fan speed %"
     echo "sudo fancontrol stepup 20             # Fan step-up %"
     echo "sudo fancontrol stepdown 1            # Fan step-down %"
-    echo "sudo fancontrol startup               # Initiate /etc/init .conf installer 
-    echo "sudo fancontrol help                  # Help menu
+    echo "sudo fancontrol startup               # Initiate /etc/init .conf installer"
+    echo "sudo fancontrol help                  # Help menu"
     echo ""
 
 case "$1" in
