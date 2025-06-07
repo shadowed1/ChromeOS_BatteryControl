@@ -39,7 +39,6 @@ read -rp "${GREEN}${BOLD}Enter Install Path - leave blank for: /usr/local/bin/Ch
 INSTALL_DIR="${INSTALL_DIR:-/usr/local/bin/ChromeOS_PowerControl}"
 INSTALL_DIR="${INSTALL_DIR%/}"
 
-echo "${GREEN}Installing to: $INSTALL_DIR $RESET"
 echo ""
 sudo mkdir -p "$INSTALL_DIR"
 
@@ -107,6 +106,8 @@ echo "IS_AMD=$IS_AMD" >> "$CONFIG_FILE"
 echo "IS_INTEL=$IS_INTEL" >> "$CONFIG_FILE"
 echo "IS_ARM=$IS_ARM" >> "$CONFIG_FILE"
 echo ""
+
+echo "${GREEN}${BOLD}Installing to: $INSTALL_DIR $RESET"
 
 if [ "$IS_INTEL" -eq 1 ]; then
     read -rp "${CYAN}Do you want Intel Turbo Boost disabled on boot? (y/n):$RESET " move_no_turbo
