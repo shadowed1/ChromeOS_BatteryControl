@@ -32,7 +32,8 @@ detect_cpu_type() {
             ;;
     esac
 }
-echo "${RED}Enabling sudo in crosh or run in VT-2 is required for this to download successfully.$RESET"
+echo ""
+echo "${RED}${BOLD}Enabling sudo in crosh or run in VT-2 is required for this to download successfully.$RESET"
 echo ""
 read -rp "${GREEN}${BOLD}Enter Install Path - leave blank for: /usr/local/bin/ChromeOS_PowerControl:$RESET" INSTALL_DIR
 INSTALL_DIR="${INSTALL_DIR:-/usr/local/bin/ChromeOS_PowerControl}"
