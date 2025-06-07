@@ -22,12 +22,12 @@ PID_FILE="$INSTALL_DIR/.fan_curve_pid"
 LOG_FILE="/var/log/fancontrol.log"
 MONITOR_PID_FILE="$INSTALL_DIR/.fancontrol_tail_fan_monitor.pid"
 
-DEFAULT_FAN_MIN_TEMP=48   # Minimum fan control temperature
-DEFAULT_FAN_MAX_TEMP=81   # Maximum fan control temperature
-DEFAULT_MIN_FAN=0         # Minimum fan speed
-DEFAULT_MAX_FAN=100       # Maximum fan speed
-DEFAULT_SLEEP_INTERVAL=3   
-DEFAULT_STEP_UP=20        
+DEFAULT_FAN_MIN_TEMP=48
+DEFAULT_FAN_MAX_TEMP=81
+DEFAULT_MIN_FAN=0
+DEFAULT_MAX_FAN=100  
+DEFAULT_SLEEP_INTERVAL=3
+DEFAULT_STEP_UP=20
 DEFAULT_STEP_DOWN=1
 
 SLEEP_INTERVAL=$DEFAULT_SLEEP_INTERVAL
@@ -221,7 +221,6 @@ monitor() {
     echo "Monitor started (PID $!)"
 }
 
-# === Config Setters ===
 fan_min_temp() {
     if [[ "$2" =~ ^[0-9]+$ ]]; then
         load_config
