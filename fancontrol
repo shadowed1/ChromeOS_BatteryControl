@@ -311,22 +311,20 @@ set_stepdown() {
 }
 
 show_help() {
-    load_config
-    echo "FanControl Script - Available Commands:"
-    echo
-    echo "  start                 Start custom fan curve."
-    echo "  stop                  Stop fancontrol and restore autofanctrl"
-    echo "  monitor               Toggle log monitor on/off"
-    echo "  fan_min_temp <°C>         Set minimum temperature (Celsius)"
-    echo "  fan_max_temp <°C>         Set maximum temperature (Celsius, max 90)"
-    echo "  min_fan <0–100>       Set fan duty at min temp"
-    echo "  max_fan <0–100>       Set fan duty at max temp (must be > min_fan)"
-    echo "  update <seconds>      Set sleep interval between fan checks (1-10)"
-    echo "  stepup <percent>      Set fan speed increase step size (1-100)"
-    echo "  stepdown <percent>    Set fan speed decrease step size (1-100)"
-    echo "  startup y/n           Yes or No for starting on boot."
-    echo "  help                  Show this help message"
-}
+    echo "FanControl commands with examples:"
+    echo "sudo fancontrol                       # Show fan status"
+    echo "sudo fancontrol start                 # Start FanControl"
+    echo "sudo fancontrol stop                  # Stop FanControl"
+    echo "sudo fancontrol min_temp 50           # Min temp threshold"
+    echo "sudo fancontrol max_temp 90           # Max temp threshold"
+    echo "sudo fancontrol min_fan 0             # Min fan speed %"
+    echo "sudo fancontrol max_fan 100           # Max fan speed %"
+    echo "sudo fancontrol stepup 20             # Fan step-up %"
+    echo "sudo fancontrol stepdown 1            # Fan step-down %"
+    echo "sudo fancontrol startup               # Initiate /etc/init .conf installer 
+    echo "sudo fancontrol help                  # Help menu
+
+
 
 # === Entry Point ===
 case "$1" in
@@ -340,6 +338,24 @@ case "$1" in
     update)   set_sleep_interval "$@" ;;
     stepup)   set_stepup "$@" ;;
     stepdown) set_stepdown "$@" ;;
+    startup)
+        CONF_SOURCE="$INSTALL_DIR/fancontrol.conf"
+        CONF_TARGET="/etc/init/fancontrol.conf"
+
+        read -p "Do you want FanControl to startup automatically? (y/n): " choice
+    if [[ "$choice" =~ ^[Yy]$ ]]; then
+        if [ -f "$CONF_SOURCE" ]; then
+            echo "Copying batterycontrol.conf to /etc/init/..."
+            sudo cp "$CONF_SOURCE" "$CONF_TARGET"
+            echo "batterycontrol.conf copied."
+        else
+            echo "${RED} fancontrol.conf not found at $CONF_SOURCE $RESET"
+        fi
+    else
+        echo "FanControl will not startup automatically."
+        sudo rm -r /etc/init/batterycontrol.conf
+    fi
+        ;;
     __monitor__)
         echo $$ > "$PID_FILE"
         touch "$RUN_FLAG"
