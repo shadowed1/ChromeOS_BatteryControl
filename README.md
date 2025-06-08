@@ -12,7 +12,7 @@
 - Control Fan speed in relation to temperature with built-in hysteresis and 0% RPM mode.
 - Features global commands for ease of use, config files that save settings, and an uninstaller to clean up after itself.
 - Optionally have BatteryControl, PowerControl, FanControl start on boot; as well as disabling Turbo Boost on boot if user has rootfs verification disabled.
-
+<br> <br> <br>
 __How to Install:__
 
 - Open crosh shell and run:
@@ -28,47 +28,54 @@ __How to Install:__
 
 - Installer has prompts to customize installation.
 - PowerControl, BatteryControl, and FanControl can run in the background and can be adjusted in real-time.
-
+<br> <br> <br>
 __Commands with examples:__
-
-- `sudo powercontrol                     # Show status`
-- `sudo powercontrol start               # Throttle CPU based on temperature curve`
-- `sudo powercontrol stop                # Default CPU temperature curve. no_turbo setting restored.`
-- `sudo powercontrol no_turbo 1          # 0 is default (Intel Only) Turbo Boost On behavior.`
-- `sudo powercontrol max_perf_pct 75     # 10 to 100%. 100 is default behavior; can be run standalone.`
-- `sudo powercontrol min_perf_pct 50     # Minimum clockspeed CPU can reach at max_temp.`
-- `sudo powercontrol max_temp 86         # Threshold when min_perf_pct is reached. Limit is 90 Celcius.`
-- `sudo powercontrol min_temp 60         # Threshold when max_perf_pct is reached.`
-- `sudo powercontrol monitor             # Updates log real-time in terminal window; run again to toggle off. `
-- `sudo powercontrol startup 1`
-- `sudo powercontrol help                # Show list of commands. `
+<br>
+PowerControl:
+`sudo powercontrol                     # Show status"`
+`sudo powercontrol start               # Throttle CPU based on temperature curve"`
+`sudo powercontrol stop                # Restore default CPU settings"`
+`sudo powercontrol no_turbo 1          # Disable turbo boost"`
+`sudo powercontrol max_perf_pct 75     # Set max performance percentage"`
+`sudo powercontrol min_perf_pct 50     # Set minimum performance at max temp"`
+`sudo powercontrol max_temp 86         # Max temperature threshold"`
+`sudo powercontrol min_temp 60         # Min temperature threshold"`
+`sudo powercontrol monitor             # Live temperature monitoring"`
+`sudo powercontrol startup             # Initiate powercontrol /etc/init .conf installer"`
+`sudo powercontrol help                # Help menu"`
   
 ----------------------------------------------------------------------------------------------
+<br>
+BatteryControl:
 
-- `sudo batterycontrol start               # starts batterycontrol`
-- `sudo batterycontrol stop                # stops batterycontrol`
-- `sudo batterycontrol status              # shows status. Leaving it blank also works`
-- `sudo batterycontrol set 80 75           # 80 is when charging stops; 75 is when char.ging may begin`
-- `sudo batterycontrol help                # Show list of commands`
+`sudo batterycontrol                   # Check BatteryControl status"
+`sudo batterycontrol start             # Start BatteryControl"
+`sudo batterycontrol stop              # Stop BatteryControl"
+`sudo batterycontrol set 80 75         # Set max/min battery charge thresholds"
+`sudo batterycontrol startup           # Initiate batterycontrol /etc/init .conf installer"
+`sudo batterycontrol help              # Help menu"
 
 ----------------------------------------------------------------------------------------------
-- `sudo fancontrol                        # Show status`
-- `sudo fancontrol start                  # starts fancontrol`
-- `sudo fancontrol stop                   # stops fancontrol and restores default fan behavior.`
-- `sudo fancontrol monitor                # Updates log real-time in terminal window; run again to toggle off.` 
-- `sudo fancontrol min_temp 48            # Threshold in C for min_fan speed is met.`
-- `sudo fancontrol max_temp 82            # Threshold in C for max_fan speed is met. 90 Celcius is max.`
-- `sudo fancontrol min_fan 0              # % in fan speed when temperature is at or below min_temp.`
-- `sudo fancontrol max_fan 100            # % in fan speed when temperature is at or below max_temp.`
-- `sudo fancontrol stepup 20              # % in fan granularity when temperature is climbing.`
-- `sudo fancontrol stepdown 1             # % in fan granularity when temperature is falling.`
-- `sudo fancontrol help                   #  Show list of commands. `
+<br>
+FanControl:
+
+`sudo fancontrol                       # Show fan status"`
+`sudo fancontrol start                 # Start FanControl"`
+`sudo fancontrol stop                  # Stop FanControl"`
+`sudo fancontrol min_temp 50           # Min temp threshold"`
+`sudo fancontrol max_temp 90           # Max temp threshold"`
+`sudo fancontrol min_fan 0             # Min fan speed %"`
+`sudo fancontrol max_fan 100           # Max fan speed %"`
+`sudo fancontrol stepup 20             # Fan step-up %"`
+`sudo fancontrol stepdown 1            # Fan step-down %"`
+`sudo fancontrol startup               # Initiate fancontrol /etc/init .conf installer"`
+`sudo fancontrol help                  # Help menu"`
 
 ----------------------------------------------------------------------------------------------
 
 - `sudo powercontrol uninstall            # Global uninstaller that will clean up after itself`
 - Alternative uninstall method: `sudo /usr/local/bin/ChromeOS_PowerControl/Uninstall_ChromeOS_PowerControl.sh`
-
+<br> <br> <br>
 ### __How It Works:__
 
 __PowerControl:__
