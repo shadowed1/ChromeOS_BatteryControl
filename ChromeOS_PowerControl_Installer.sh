@@ -215,7 +215,7 @@ if [ "$IS_INTEL" -eq 1 ]; then
     SHOW_POWERCONTROL_NOTICE=1
 fi
 
-echo "${MAGENTA}Detected backlight: $BACKLIGHT_NAME"
+echo "${GREEN}Detected backlight: $BACKLIGHT_NAME"
 echo "Brightness path: $BRIGHTNESS_PATH"
 echo "Max brightness path: $MAX_BRIGHTNESS_PATH${RESET}"
 
