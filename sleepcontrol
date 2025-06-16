@@ -243,9 +243,9 @@ flock -n 200 || {
             
                     local dim_value
                     if [[ $saved_display_brightness -gt 0 ]]; then
-                        dim_value=$((saved_display_brightness / 4))
+                        dim_value=$((saved_display_brightness / 8))
                     else
-                        dim_value=$((max_brightness / 4))
+                        dim_value=$((max_brightness / 8))
                     fi
             
                     set_display_brightness "$dim_value"
