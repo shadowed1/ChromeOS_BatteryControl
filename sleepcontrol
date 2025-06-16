@@ -103,11 +103,24 @@ load_config
 
 set_display_brightness() {
     local value=$1
-    if [[ -n "$BRIGHTNESS_PATH" ]]; then
-        echo "$value" | sudo tee "$BRIGHTNESS_PATH" >/dev/null
+    if [[ -n "$BRIGHTNESS_PATH" && -n "$MAX_BRIGHTNESS_PATH" ]]; then
+        local max_brightness
+        max_brightness=$(cat "$MAX_BRIGHTNESS_PATH" 2>/dev/null)
+        
+        if ! [[ "$value" =~ ^[0-9]+$ ]]; then
+            echo "Invalid brightness value: $value" >&2
+            return 1
+        fi
+
+        if (( value > max_brightness )); then
+            value=$max_brightness
+        fi
+
+        echo "$value" | sudo tee "$BRIGHTNESS_PATH" > /dev/null
         echo "$(date '+%Y-%m-%d %H:%M:%S') - Set display brightness to $value" >> "$LOG_FILE"
     fi
-    }
+}
+
 
 send_fake_activity() {
     dbus-send --system --type=method_call \
@@ -138,9 +151,7 @@ flock -n 200 || {
     local fake_activity_pid=0
     local last_reload_time=0
     local saved_kb_brightness=$(sudo ectool pwmgetkblight | awk '{print $NF}')
-
-
-    saved_display_brightness=0
+   
     if [[ -n "$BRIGHTNESS_PATH" ]]; then
     saved_display_brightness=$(cat "$BRIGHTNESS_PATH" 2>/dev/null || echo 0)
     fi
@@ -228,7 +239,7 @@ flock -n 200 || {
             if (( now - last_ts >= dim_delay && now - last_ts < backlight_delay )); then
                 if [[ $saved_display_brightness -gt 0 ]]; then
                     local max_brightness=$(cat "$MAX_BRIGHTNESS_PATH" 2>/dev/null || echo 255)
-                    local dim_value=$((max_brightness / 4))
+                    local dim_value=$((saved_display_brightness / 4))
                     set_display_brightness "$dim_value"
                 fi
             elif (( now - last_ts >= backlight_delay )); then
