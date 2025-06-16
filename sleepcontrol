@@ -244,12 +244,17 @@ flock -n 200 || {
                     local max_brightness
                     max_brightness=$(cat "$MAX_BRIGHTNESS_PATH" 2>/dev/null || echo 255)
             
+                    if [[ -n "$BRIGHTNESS_PATH" ]]; then
+                        saved_display_brightness=$(cat "$BRIGHTNESS_PATH" 2>/dev/null || echo 0)
+                    fi
+
                     local dim_value
                     if [[ $saved_display_brightness -gt 0 ]]; then
                         dim_value=$((saved_display_brightness / 8))
                     else
                         dim_value=$((max_brightness / 8))
                     fi
+
             
                     set_display_brightness "$dim_value"
                 fi
