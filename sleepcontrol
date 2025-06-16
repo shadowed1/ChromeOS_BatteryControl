@@ -21,6 +21,9 @@ PID_FILE="$INSTALL_DIR/.sleepcontrol_pid"
 RUN_FLAG="$INSTALL_DIR/.sleepcontrol_enabled"
 LOG_FILE="/var/log/sleepcontrol.log"
 BATTERY_STATUS_PATH="/sys/class/power_supply/BAT0/status"
+BACKLIGHT_NAME=""
+BRIGHTNESS_PATH=""
+MAX_BRIGHTNESS_PATH=""
 
 DEFAULT_BATTERY_DELAY=14
 DEFAULT_POWER_DELAY=30
