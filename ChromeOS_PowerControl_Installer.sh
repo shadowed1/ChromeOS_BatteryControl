@@ -109,6 +109,55 @@ fi
     GPU_MAX_FREQ=""
     GPU_TYPE="unknown"
 }
+
+detect_backlight_path() {
+    BACKLIGHT_BASE="/sys/class/backlight"
+    BRIGHTNESS_PATH=""
+    MAX_BRIGHTNESS_PATH=""
+    BACKLIGHT_NAME=""
+
+    if [ ! -d "$BACKLIGHT_BASE" ]; then
+        echo "No backlight sysfs found at $BACKLIGHT_BASE"
+        return 1
+    fi
+    
+    for candidate in intel_backlight amdgpu_bl0 radeon_bl0 panel0-backlight pwm-backlight acpi_video0 backlight; do
+        if [ -d "$BACKLIGHT_BASE/$candidate" ]; then
+            BACKLIGHT_NAME="$candidate"
+            BRIGHTNESS_PATH="$BACKLIGHT_BASE/$candidate/brightness"
+            MAX_BRIGHTNESS_PATH="$BACKLIGHT_BASE/$candidate/max_brightness"
+            # Make sure the files exist and are readable
+            if [ -r "$BRIGHTNESS_PATH" ] && [ -r "$MAX_BRIGHTNESS_PATH" ]; then
+                break
+            else
+                BRIGHTNESS_PATH=""
+                MAX_BRIGHTNESS_PATH=""
+                BACKLIGHT_NAME=""
+            fi
+        fi
+    done
+
+    if [ -z "$BRIGHTNESS_PATH" ] || [ -z "$MAX_BRIGHTNESS_PATH" ]; then
+        for dir in "$BACKLIGHT_BASE"/*; do
+            if [ -d "$dir" ] && [ -r "$dir/brightness" ] && [ -r "$dir/max_brightness" ]; then
+                BACKLIGHT_NAME=$(basename "$dir")
+                BRIGHTNESS_PATH="$dir/brightness"
+                MAX_BRIGHTNESS_PATH="$dir/max_brightness"
+                break
+            fi
+        done
+    fi
+
+    if [ -z "$BRIGHTNESS_PATH" ] || [ -z "$MAX_BRIGHTNESS_PATH" ]; then
+        echo "No valid backlight interface found."
+        return 1
+    fi
+
+    echo "Backlight interface: $BACKLIGHT_NAME"
+    echo "Brightness file: $BRIGHTNESS_PATH"
+    echo "Max brightness file: $MAX_BRIGHTNESS_PATH"
+}
+
 echo ""
 echo "${RED}VT-2 (or enabling sudo in crosh) is ${RESET}${BOLD}${RED}required${RESET}${RED} to run this installer.$RESET"
 echo "${YELLOW}Must be installed in a location without the ${RESET}${MAGENTA}${BOLD}noexec mount.$RESET"
@@ -226,6 +275,9 @@ declare -a ordered_keys=(
   "IS_AMD"
   "IS_INTEL"
   "IS_ARM"
+  "BACKLIGHT_NAME"
+  "BRIGHTNESS_PATH"
+  "MAX_BRIGHTNESS_PATH"
 )
 
 declare -a ordered_categories=("PowerControl" "BatteryControl" "FanControl" "GPUControl" "SleepControl" "Platform Configuration")
@@ -235,7 +287,7 @@ declare -A categories=(
   ["FanControl"]="MIN_FAN MAX_FAN FAN_MIN_TEMP FAN_MAX_TEMP STEP_UP STEP_DOWN SLEEP_INTERVAL"
   ["GPUControl"]="GPU_MAX_FREQ"
   ["SleepControl"]="BATTERY_DELAY POWER_DELAY BATTERY_BACKLIGHT POWER_BACKLIGHT"
-  ["Platform Configuration"]="IS_AMD IS_INTEL IS_ARM PERF_PATH TURBO_PATH GPU_TYPE GPU_FREQ_PATH ORIGINAL_GPU_MAX_FREQ PP_OD_FILE AMD_SELECTED_SCLK_INDEX"
+  ["Platform Configuration"]="IS_AMD IS_INTEL IS_ARM PERF_PATH TURBO_PATH GPU_TYPE GPU_FREQ_PATH ORIGINAL_GPU_MAX_FREQ PP_OD_FILE AMD_SELECTED_SCLK_INDEX BACKLIGHT_NAME BRIGHTNESS_PATH MAX_BRIGHTNESS_PATH"
 )
 
 if [[ -z "${ORIGINAL_GPU_MAX_FREQ}" ]]; then ORIGINAL_GPU_MAX_FREQ=$GPU_MAX_FREQ; fi
@@ -290,6 +342,9 @@ declare -A defaults=(
   [IS_AMD]=$IS_AMD
   [IS_INTEL]=$IS_INTEL
   [IS_ARM]=$IS_ARM
+  [BACKLIGHT_NAME]=$BACKLIGHT_NAME
+  [BRIGHTNESS_PATH]=$BRIGHTNESS_PATH
+  [MAX_BRIGHTNESS_PATH]=$MAX_BRIGHTNESS_PATH
 )
 
 if [ -f "$CONFIG_FILE" ]; then
