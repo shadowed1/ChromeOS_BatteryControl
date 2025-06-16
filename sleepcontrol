@@ -92,8 +92,8 @@ show_help() {
         echo "sudo sleepcontrol                     # Show current GPU info and frequency"
         echo "sudo sleepcontrol start               # Start SleepControl"
         echo "sudo sleepcontrol stop                # Stop SleepControl"
-        echo "sudo sleepcontrol battery 5 10        # When idle, display timeout in 10m and ChromeOS sleeps in 15m when on battery"
-        echo "sudo sleepcontrol power 15 30         # When idle, display timeout in 15m and ChromeOS sleeps in 30m when on plugged-in"
+        echo "sudo sleepcontrol battery 2 5 10      # When idle, display dims in 2m, timeout in 10m, and ChromeOS sleeps in 15m when on battery"
+        echo "sudo sleepcontrol power 5 15 30       # When idle, display dims in 10mtimeout in 15m and ChromeOS sleeps in 30m when on plugged-in"
         echo "sudo sleepcontrol startup             # Copy or Remove sleepcontrol.conf at: /etc/init/"
         echo "sudo sleepcontrol help                # Help menu${RESET}"
         exit 0
@@ -451,8 +451,8 @@ flock -n 200 || {
                 echo "${YELLOW}SleepControl Status: RUN FLAG PRESENT, but process not running${RESET}"
             fi
             echo ""
-            echo "Battery = Display Timeout: $((BATTERY_BACKLIGHT)) min -> Sleep: $((BATTERY_DELAY)) min"
-            echo "Power = Display Timeout: $((POWER_BACKLIGHT)) min -> Sleep: $((POWER_DELAY)) min"
+            echo "Battery = Dim: $((BATTERY_DIM_DELAY)) min -> Timeout: $((BATTERY_BACKLIGHT)) min -> Sleep: $((BATTERY_DELAY)) min"
+            echo "Power = Dim: ${{POWER_DIM_DELAY}} min -> Timeout: $((POWER_BACKLIGHT)) min -> Sleep: $((POWER_DELAY)) min"
             echo ""
         else
             echo "${RED}SleepControl Status: STOPPED${RESET}"
