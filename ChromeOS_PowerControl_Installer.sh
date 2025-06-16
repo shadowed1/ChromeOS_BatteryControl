@@ -208,11 +208,17 @@ for file in "${files[@]}"; do
     echo ""
 done
 
+detect_backlight_path
 detect_cpu_type
 
 if [ "$IS_INTEL" -eq 1 ]; then
     SHOW_POWERCONTROL_NOTICE=1
 fi
+
+echo "${MAGENTA}Detected backlight: $BACKLIGHT_NAME"
+echo "Brightness path: $BRIGHTNESS_PATH"
+echo "Max brightness path: $MAX_BRIGHTNESS_PATH${RESET}"
+
 
 echo "${CYAN}Detected CPU Vendor: $CPU_VENDOR"
 echo "PERF_PATH: $PERF_PATH"
