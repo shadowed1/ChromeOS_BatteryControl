@@ -25,21 +25,27 @@ BACKLIGHT_NAME=""
 BRIGHTNESS_PATH=""
 MAX_BRIGHTNESS_PATH=""
 
-DEFAULT_BATTERY_DELAY=14
+DEFAULT_BATTERY_DELAY=15
+DEFAULT_BATTERY_BACKLIGHT=10
+DEFAULT_BATTERY_DIM_DELAY=5
 DEFAULT_POWER_DELAY=30
-DEFAULT_BATTERY_BACKLIGHT=4
-DEFAULT_POWER_BACKLIGHT=10
-
+DEFAULT_POWER_BACKLIGHT=15
+DEFAULT_POWER_DIM_DELAY=10
 BATTERY_DELAY=
-POWER_DELAY=
 BATTERY_BACKLIGHT=
+BATTERY_DIM_DELAY
+POWER_DELAY=
 POWER_BACKLIGHT=
+POWER_DIM_DELAY=
 audio_active=0
+saved_display_brightness=0
 
 BATTERY_DELAY=$DEFAULT_BATTERY_DELAY
 POWER_DELAY=$DEFAULT_POWER_DELAY
 BATTERY_BACKLIGHT=$DEFAULT_BATTERY_BACKLIGHT
 POWER_BACKLIGHT=$DEFAULT_POWER_BACKLIGHT
+BATTERY_DIM_DELAY=$DEFAULT_BATTERY_DIM_DELAY
+POWER_DIM_DELAY=$DEFAULT_POWER_DIM_DELAY
 
 load_config() {
     if [ -f "$CONFIG_FILE" ]; then
@@ -61,6 +67,13 @@ validate_config() {
     if [[ -z "$POWER_BACKLIGHT" || ! "$POWER_BACKLIGHT" =~ ^[0-9]+$ ]]; then
         POWER_BACKLIGHT=$DEFAULT_POWER_BACKLIGHT
     fi
+
+    if [[ -z "$BATTERY_DIM_DELAY" || ! "$BATTERY_DIM_DELAY" =~ ^[0-9]+$ ]]; then
+        BATTERY_DIM_DELAY=$DEFAULT_BATTERY_DIM_DELAY
+    fi
+    if [[ -z "$POWER_DIM_DELAY" || ! "$POWER_DIM_DELAY" =~ ^[0-9]+$ ]]; then
+        POWER_DIM_DELAY=$DEFAULT_POWER_DIM_DELAY
+    fi
 }
 
 save_config() {
@@ -69,6 +82,8 @@ save_config() {
     sed -i "s/^POWER_DELAY=.*/POWER_DELAY=$POWER_DELAY/" "$CONFIG_FILE" || echo "POWER_DELAY=$POWER_DELAY" >> "$CONFIG_FILE"
     sed -i "s/^BATTERY_BACKLIGHT=.*/BATTERY_BACKLIGHT=$BATTERY_BACKLIGHT/" "$CONFIG_FILE" || echo "BATTERY_BACKLIGHT=$BATTERY_BACKLIGHT" >> "$CONFIG_FILE"
     sed -i "s/^POWER_BACKLIGHT=.*/POWER_BACKLIGHT=$POWER_BACKLIGHT/" "$CONFIG_FILE" || echo "POWER_BACKLIGHT=$POWER_BACKLIGHT" >> "$CONFIG_FILE"
+    sed -i "s/^BATTERY_DIM_DELAY=.*/BATTERY_DIM_DELAY=$BATTERY_DIM_DELAY/" "$CONFIG_FILE" || echo "BATTERY_DIM_DELAY=$BATTERY_DIM_DELAY" >> "$CONFIG_FILE"
+    sed -i "s/^POWER_DIM_DELAY=.*/POWER_DIM_DELAY=$POWER_DIM_DELAY/" "$CONFIG_FILE" || echo "POWER_DIM_DELAY=$POWER_DIM_DELAY" >> "$CONFIG_FILE"
 }
 
 show_help() {
@@ -85,6 +100,14 @@ show_help() {
             }
 
 load_config
+
+set_display_brightness() {
+    local value=$1
+    if [[ -n "$BRIGHTNESS_PATH" ]]; then
+        echo "$value" | sudo tee "$BRIGHTNESS_PATH" >/dev/null
+        echo "$(date '+%Y-%m-%d %H:%M:%S') - Set display brightness to $value" >> "$LOG_FILE"
+    fi
+    }
 
 send_fake_activity() {
     dbus-send --system --type=method_call \
@@ -117,7 +140,11 @@ flock -n 200 || {
     local saved_kb_brightness=$(sudo ectool pwmgetkblight | awk '{print $NF}')
 
 
-   
+    saved_display_brightness=0
+    if [[ -n "$BRIGHTNESS_PATH" ]]; then
+    saved_display_brightness=$(cat "$BRIGHTNESS_PATH" 2>/dev/null || echo 0)
+    fi
+
 
     start_fake_activity() {
         if (( fake_activity_pid == 0 )); then
@@ -162,6 +189,9 @@ flock -n 200 || {
                 if (( monitor_idle == 1 )); then
                         echo "$(date '+%Y-%m-%d %H:%M:%S') - Pausing dbus-send simulation..." >> "$LOG_FILE"
                     fi
+                     if [[ $saved_display_brightness -gt 0 ]]; then
+                      echo "$saved_display_brightness" | sudo tee "$BRIGHTNESS_PATH" >/dev/null
+                    fi
                     monitor_idle=0
                     active=1
                     stop_fake_activity
@@ -181,11 +211,13 @@ flock -n 200 || {
         if (( monitor_idle == 1 )); then
             status=$(cat "$BATTERY_STATUS_PATH" 2>/dev/null)
 
-            if [[ "$status" == "Discharging" ]]; then
+           if [[ "$status" == "Discharging" ]]; then
+                dim_delay=$((BATTERY_DIM_DELAY * 60))
                 backlight_delay=$((BATTERY_BACKLIGHT * 60))
                 last_ts=$battery_backlight_ts
                 suspend_delay=$((BATTERY_DELAY * 60))
             else
+                dim_delay=$((POWER_DIM_DELAY * 60))
                 backlight_delay=$((POWER_BACKLIGHT * 60))
                 last_ts=$power_backlight_ts
                 suspend_delay=$((POWER_DELAY * 60))
@@ -193,7 +225,13 @@ flock -n 200 || {
 
             echo "$(date '+%Y-%m-%d %H:%M:%S') - dbus-send simulation active: $now $last_ts" >> "$LOG_FILE"
 
-            if (( now - last_ts >= backlight_delay )); then
+            if (( now - last_ts >= dim_delay && now - last_ts < backlight_delay )); then
+                if [[ $saved_display_brightness -gt 0 ]]; then
+                    local max_brightness=$(cat "$MAX_BRIGHTNESS_PATH" 2>/dev/null || echo 255)
+                    local dim_value=$((max_brightness / 4))
+                    set_display_brightness "$dim_value"
+                fi
+            elif (( now - last_ts >= backlight_delay )); then
                 if [ "$backlight_off" -eq 0 ]; then
                     sudo ectool backlight 0 2>/dev/null
                     backlight_off=1
@@ -268,54 +306,104 @@ flock -n 200 || {
         ;;
     battery|power)
     MODE=$1
-    BACKLIGHT_VAL=$2
-    DELAY_VAL=$3
 
-    if [ -n "$BACKLIGHT_VAL" ] && [ -n "$DELAY_VAL" ]; then
-        if [[ "$BACKLIGHT_VAL" =~ ^[0-9]+$ ]] && [[ "$DELAY_VAL" =~ ^[0-9]+$ ]]; then
-            if (( BACKLIGHT_VAL < 1 || BACKLIGHT_VAL > 9999 || DELAY_VAL < 1 || DELAY_VAL > 9999 )); then
-                echo "${RED}Values must be between 1 and 9999 minutes.${RESET}"
+    if [[ $# -eq 4 ]]; then
+        # 3 values: dim_delay, backlight_off_delay, sleep_delay
+        DIM_VAL=$2
+        BACKLIGHT_VAL=$3
+        DELAY_VAL=$4
+
+        # Validate all three values
+        for v in "$DIM_VAL" "$BACKLIGHT_VAL" "$DELAY_VAL"; do
+            if ! [[ "$v" =~ ^[0-9]+$ && "$v" -ge 1 && "$v" -le 9999 ]]; then
+                echo "${RED}Values must be integers between 1 and 9999 minutes.${RESET}"
                 exit 1
             fi
-            if (( BACKLIGHT_VAL > DELAY_VAL )); then
-                echo "${RED}Backlight timeout cannot be greater than sleep.${RESET}"
-                exit 1
-            fi
-            if [ "$MODE" = "battery" ]; then
-                BATTERY_BACKLIGHT=$BACKLIGHT_VAL
-                BATTERY_DELAY=$DELAY_VAL
-            else
-                POWER_BACKLIGHT=$BACKLIGHT_VAL
-                POWER_DELAY=$DELAY_VAL
-            fi
-            save_config
-            echo "${GREEN}${BOLD}${MODE^}${RESET}${GREEN} Display timeout set to ${BOLD}${BACKLIGHT_VAL} min${RESET}${GREEN}, Sleep set to ${BOLD}${DELAY_VAL} min.${RESET}"
-        else
-            echo "${RED}Invalid values. Usage: sleepcontrol $MODE 10 20).${RESET}"
+        done
+
+        if (( DIM_VAL > BACKLIGHT_VAL )); then
+            echo "${RED}Dim delay cannot be greater than backlight off delay.${RESET}"
+            exit 1
         fi
 
-    elif [ -n "$BACKLIGHT_VAL" ]; then
-        if [[ "$BACKLIGHT_VAL" =~ ^[0-9]+$ ]] && (( BACKLIGHT_VAL >= 1 && BACKLIGHT_VAL <= 9999 )); then
-            if [ "$MODE" = "battery" ]; then
-                BATTERY_DELAY=$BACKLIGHT_VAL
-            else
-                POWER_DELAY=$BACKLIGHT_VAL
-            fi
-            save_config
-            echo "${GREEN}${BOLD}${MODE^}${RESET}${GREEN} sleep delay set to ${BOLD}${BACKLIGHT_VAL} minutes.${RESET}"
-        else
-            echo "${RED}Invalid value. Must be a number between 1 and 9999.${RESET}"
+        if (( BACKLIGHT_VAL > DELAY_VAL )); then
+            echo "${RED}Backlight off delay cannot be greater than sleep delay.${RESET}"
+            exit 1
         fi
+
+        if [[ "$MODE" == "battery" ]]; then
+            BATTERY_DIM_DELAY=$DIM_VAL
+            BATTERY_BACKLIGHT=$BACKLIGHT_VAL
+            BATTERY_DELAY=$DELAY_VAL
+        else
+            POWER_DIM_DELAY=$DIM_VAL
+            POWER_BACKLIGHT=$BACKLIGHT_VAL
+            POWER_DELAY=$DELAY_VAL
+        fi
+
+        save_config
+        echo "${GREEN}${BOLD}${MODE^}${RESET}${GREEN} dim delay set to ${DIM_VAL} min, display off delay set to ${BACKLIGHT_VAL} min, sleep delay set to ${DELAY_VAL} min.${RESET}"
+
+    elif [[ $# -eq 3 ]]; then
+        # 2 values: backlight_off_delay, sleep_delay
+        BACKLIGHT_VAL=$2
+        DELAY_VAL=$3
+
+        if ! [[ "$BACKLIGHT_VAL" =~ ^[0-9]+$ && "$DELAY_VAL" =~ ^[0-9]+$ ]]; then
+            echo "${RED}Invalid values. Usage: sleepcontrol $MODE <backlight_off_delay> <sleep_delay>${RESET}"
+            exit 1
+        fi
+
+        if (( BACKLIGHT_VAL < 1 || BACKLIGHT_VAL > 9999 || DELAY_VAL < 1 || DELAY_VAL > 9999 )); then
+            echo "${RED}Values must be integers between 1 and 9999 minutes.${RESET}"
+            exit 1
+        fi
+
+        if (( BACKLIGHT_VAL > DELAY_VAL )); then
+            echo "${RED}Backlight timeout cannot be greater than sleep delay.${RESET}"
+            exit 1
+        fi
+
+        if [[ "$MODE" == "battery" ]]; then
+            BATTERY_BACKLIGHT=$BACKLIGHT_VAL
+            BATTERY_DELAY=$DELAY_VAL
+        else
+            POWER_BACKLIGHT=$BACKLIGHT_VAL
+            POWER_DELAY=$DELAY_VAL
+        fi
+
+        save_config
+        echo "${GREEN}${BOLD}${MODE^}${RESET}${GREEN} Display timeout set to ${BOLD}${BACKLIGHT_VAL} min${RESET}${GREEN}, Sleep set to ${BOLD}${DELAY_VAL} min.${RESET}"
+
+    elif [[ $# -eq 2 ]]; then
+        # 1 value: sleep_delay only (deprecated? or for backward compatibility)
+        VAL=$2
+
+        if ! [[ "$VAL" =~ ^[0-9]+$ && "$VAL" -ge 1 && "$VAL" -le 9999 ]]; then
+            echo "${RED}Invalid value. Must be an integer between 1 and 9999.${RESET}"
+            exit 1
+        fi
+
+        if [[ "$MODE" == "battery" ]]; then
+            BATTERY_DELAY=$VAL
+        else
+            POWER_DELAY=$VAL
+        fi
+
+        save_config
+        echo "${GREEN}${BOLD}${MODE^}${RESET}${GREEN} sleep delay set to ${BOLD}${VAL} minutes.${RESET}"
 
     else
+        # No parameters - show current config
         load_config
-        if [ "$MODE" = "battery" ]; then
-            echo "Battery: Display timeout = $BATTERY_BACKLIGHT min, Sleep = $BATTERY_DELAY min"
+        if [[ "$MODE" == "battery" ]]; then
+            echo "Battery: Dim delay = ${BATTERY_DIM_DELAY:-N/A} min, Display timeout = ${BATTERY_BACKLIGHT:-N/A} min, Sleep = ${BATTERY_DELAY:-N/A} min"
         else
-            echo "Power: Display timeout = $POWER_BACKLIGHT min, Sleep = $POWER_DELAY min"
+            echo "Power: Dim delay = ${POWER_DIM_DELAY:-N/A} min, Display timeout = ${POWER_BACKLIGHT:-N/A} min, Sleep = ${POWER_DELAY:-N/A} min"
         fi
     fi
-        ;;
+    ;;
+
         startup)
         CONF_SOURCE="$INSTALL_DIR/sleepcontrol.conf"
         CONF_TARGET="/etc/init/sleepcontrol.conf"
