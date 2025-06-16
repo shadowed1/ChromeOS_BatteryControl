@@ -25,12 +25,12 @@ BACKLIGHT_NAME=""
 BRIGHTNESS_PATH=""
 MAX_BRIGHTNESS_PATH=""
 
-DEFAULT_BATTERY_DELAY=15
-DEFAULT_BATTERY_BACKLIGHT=10
-DEFAULT_BATTERY_DIM_DELAY=5
+DEFAULT_BATTERY_DELAY=12
+DEFAULT_BATTERY_BACKLIGHT=7
+DEFAULT_BATTERY_DIM_DELAY=3
 DEFAULT_POWER_DELAY=30
 DEFAULT_POWER_BACKLIGHT=15
-DEFAULT_POWER_DIM_DELAY=10
+DEFAULT_POWER_DIM_DELAY=5
 BATTERY_DELAY=
 BATTERY_BACKLIGHT=
 BATTERY_DIM_DELAY=
@@ -92,7 +92,7 @@ show_help() {
         echo "sudo sleepcontrol                     # Show current GPU info and frequency"
         echo "sudo sleepcontrol start               # Start SleepControl"
         echo "sudo sleepcontrol stop                # Stop SleepControl"
-        echo "sudo sleepcontrol battery 3 5 10      # When idle, display dims in 2m, timeout in 10m, and ChromeOS sleeps in 15m when on battery"
+        echo "sudo sleepcontrol battery 3 7 12      # When idle, display dims in 3m, timeout in 7m, and ChromeOS sleeps in 12m when on battery"
         echo "sudo sleepcontrol power 5 15 30       # When idle, display dims in 5m, timeout in 15m and ChromeOS sleeps in 30m when on plugged-in"
         echo "sudo sleepcontrol startup             # Copy or Remove sleepcontrol.conf at: /etc/init/"
         echo "sudo sleepcontrol help                # Help menu${RESET}"
