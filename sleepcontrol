@@ -200,8 +200,11 @@ flock -n 200 || {
                 if (( monitor_idle == 1 )); then
                         echo "$(date '+%Y-%m-%d %H:%M:%S') - Pausing dbus-send simulation..." >> "$LOG_FILE"
                     fi
-                     if [[ $saved_display_brightness -gt 0 ]]; then
-                      echo "$saved_display_brightness" | sudo tee "$BRIGHTNESS_PATH" >/dev/null
+                    if [[ -n "$BRIGHTNESS_PATH" ]]; then
+                        saved_display_brightness=$(cat "$BRIGHTNESS_PATH" 2>/dev/null || echo 0)
+                        if [[ $saved_display_brightness -gt 0 ]]; then
+                            echo "$saved_display_brightness" | sudo tee "$BRIGHTNESS_PATH" >/dev/null
+                        fi
                     fi
                     monitor_idle=0
                     active=1
