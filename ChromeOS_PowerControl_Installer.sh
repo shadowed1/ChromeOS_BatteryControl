@@ -147,14 +147,14 @@ for file in "${files[@]}"; do
         echo ""
         continue
     fi
-    curl -L "https://raw.githubusercontent.com/shadowed1/ChromeOS_PowerControl/main/$file" -o "$INSTALL_DIR/$file"
+    curl -L "https://raw.githubusercontent.com/shadowed1/ChromeOS_PowerControl/unstable/$file" -o "$INSTALL_DIR/$file"
     echo "$INSTALL_DIR/$file downloaded."
     echo ""
 done
 
 declare -a files=(".powercontrol_conf.sh" ".batterycontrol_conf.sh" ".fancontrol_conf.sh" ".gpucontrol_conf.sh" ".sleepcontrol_conf.sh")
 for file in "${files[@]}"; do
-    curl -L "https://raw.githubusercontent.com/shadowed1/ChromeOS_PowerControl/main/$file" -o /usr/local/bin/$file
+    curl -L "https://raw.githubusercontent.com/shadowed1/ChromeOS_PowerControl/unstable/$file" -o /usr/local/bin/$file
     echo "/usr/local/bin/$file downloaded."
     echo ""
 done
