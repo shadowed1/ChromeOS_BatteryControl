@@ -214,11 +214,11 @@ detect_cpu_type
 if [ "$IS_INTEL" -eq 1 ]; then
     SHOW_POWERCONTROL_NOTICE=1
 fi
-
-echo "${GREEN}Detected backlight: $BACKLIGHT_NAME"
-echo "Brightness path: $BRIGHTNESS_PATH"
-echo "Max brightness path: $MAX_BRIGHTNESS_PATH${RESET}"
-
+echo ""
+echo "${GREEN}$BACKLIGHT_NAME"
+echo "$BRIGHTNESS_PATH"
+echo "$MAX_BRIGHTNESS_PATH${RESET}"
+echo ""
 
 echo "${CYAN}Detected CPU Vendor: $CPU_VENDOR"
 echo "PERF_PATH: $PERF_PATH"
@@ -228,7 +228,7 @@ echo "$RESET"
 sudo chmod +x "$INSTALL_DIR/powercontrol" "$INSTALL_DIR/batterycontrol" "$INSTALL_DIR/fancontrol" "$INSTALL_DIR/gpucontrol" "$INSTALL_DIR/sleepcontrol" "$INSTALL_DIR/Uninstall_ChromeOS_PowerControl.sh" "$INSTALL_DIR/config.sh"
 sudo touch "$INSTALL_DIR/.batterycontrol_enabled" "$INSTALL_DIR/.powercontrol_enabled" "$INSTALL_DIR/.fancontrol_enabled"
 sudo touch "$INSTALL_DIR/.fancontrol_pid" "$INSTALL_DIR/.fancontrol_tail_fan_monitor.pid" "$INSTALL_DIR/.batterycontrol_pid" "$INSTALL_DIR/.powercontrol_tail_fan_monitor.pid" "$INSTALL_DIR/.powercontrol_pid" "$INSTALL_DIR/.sleepcontrol_monitor.pid"
-
+echo ""
 detect_gpu_freq
 echo "${MAGENTA}Detected GPU Type: $GPU_TYPE"
 echo "GPU_FREQ_PATH: $GPU_FREQ_PATH"
