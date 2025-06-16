@@ -236,10 +236,18 @@ flock -n 200 || {
 
             echo "$(date '+%Y-%m-%d %H:%M:%S') - dbus-send simulation active: $now $last_ts" >> "$LOG_FILE"
 
-            if (( now - last_ts >= dim_delay && now - last_ts < backlight_delay )); then
-                if [[ $saved_display_brightness -gt 0 ]]; then
-                    local max_brightness=$(cat "$MAX_BRIGHTNESS_PATH" 2>/dev/null || echo 255)
-                    local dim_value=$((saved_display_brightness / 4))
+           if (( now - last_ts >= dim_delay && now - last_ts < backlight_delay )); then
+                if [[ -n "$MAX_BRIGHTNESS_PATH" && -r "$MAX_BRIGHTNESS_PATH" ]]; then
+                    local max_brightness
+                    max_brightness=$(cat "$MAX_BRIGHTNESS_PATH" 2>/dev/null || echo 255)
+            
+                    local dim_value
+                    if [[ $saved_display_brightness -gt 0 ]]; then
+                        dim_value=$((saved_display_brightness / 4))
+                    else
+                        dim_value=$((max_brightness / 4))
+                    fi
+            
                     set_display_brightness "$dim_value"
                 fi
             elif (( now - last_ts >= backlight_delay )); then
